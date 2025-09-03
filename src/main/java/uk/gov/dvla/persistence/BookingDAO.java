@@ -45,19 +45,19 @@ public interface BookingDAO {
     List<Booking> findByDate(LocalDate date);
 
     /**
-     * Finds all bookings within a date range.
+     * Finds all bookings for a specific customer ID.
      *
-     * @param startDate the start date (inclusive)
-     * @param endDate the end date (inclusive)
-     * @return list of bookings in the date range
-     */
-    List<Booking> findByDateRange(LocalDate startDate, LocalDate endDate);
-
-    /**
-     * Finds all bookings for a specific customer.
-     *
-     * @param customerId the customer ID
+     * @param customerId the customer ID to search for
      * @return list of bookings for the customer
      */
     List<Booking> findByCustomerId(int customerId);
+
+    /**
+     * Finds all bookings within a date range.
+     *
+     * @param startDate the start date of the range
+     * @param endDate   the end date of the range
+     * @return list of bookings within the date range
+     */
+    List<Booking> findByDateRange(LocalDate startDate, LocalDate endDate);
 }

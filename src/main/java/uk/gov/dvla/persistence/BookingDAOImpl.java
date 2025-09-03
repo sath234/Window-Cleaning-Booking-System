@@ -37,18 +37,18 @@ public class BookingDAOImpl implements BookingDAO {
     }
 
     @Override
-    public List<Booking> findByDateRange(LocalDate startDate, LocalDate endDate) {
-        return bookings.values()
-                .stream()
-                .filter(booking -> !booking.getBookingDate().isBefore(startDate) && !booking.getBookingDate().isAfter(endDate))
-                .toList();
-    }
-
-    @Override
     public List<Booking> findByCustomerId(int customerId) {
         return bookings.values()
                 .stream()
                 .filter(booking -> booking.getCustomerId() == customerId)
+                .toList();
+    }
+
+    @Override
+    public List<Booking> findByDateRange(LocalDate startDate, LocalDate endDate) {
+        return bookings.values()
+                .stream()
+                .filter(booking -> !booking.getBookingDate().isBefore(startDate) && !booking.getBookingDate().isAfter(endDate))
                 .toList();
     }
 }

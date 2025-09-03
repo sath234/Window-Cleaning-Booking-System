@@ -4,6 +4,7 @@ import uk.gov.dvla.model.Customer;
 import uk.gov.dvla.util.ValidationUtil;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CustomerDAOImpl implements CustomerDAO {
 
@@ -28,6 +29,6 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     @Override
     public List<Customer> findByName(String name) {
-        return customers.values().stream().filter(customer -> customer.getName().equals(name)).toList();
+        return customers.values().stream().filter(c -> c.getName().equals(name)).toList();
     }
 }

@@ -1,14 +1,10 @@
 package uk.gov.dvla.util;
 
-import uk.gov.dvla.model.exception.BookingDateInThePastException;
-import uk.gov.dvla.model.exception.DuplicateEntityException;
-import uk.gov.dvla.model.exception.InvalidDateRangeException;
+import uk.gov.dvla.model.Booking;
+import uk.gov.dvla.model.Customer;
+import uk.gov.dvla.model.exception.*;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -66,6 +62,32 @@ public final class ValidationUtil {
     public static void checkStartDateIsBeforeEndDate(final LocalDate startDate, final LocalDate endDate) {
         if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
             throw new InvalidDateRangeException("Start date cannot be after end date");
+        }
+    }
+
+    /**
+     * Checks if the customer object is valid.
+     *
+     * @param customer the customer object to check
+     */
+    public static void checkValidCustomerObject(Customer customer) {
+        checkObjectIsNotNull(customer, "Customer");
+        if (customer.getId() < 1 || customer.getWindows() < 1 || customer.getName() == null) {
+            throw new InvalidCustomerException("Invalid customer data");
+        }
+    }
+
+    /**
+     * Checks if the booking object is valid.
+     *
+     * @param booking the booking object to check
+     */
+    public static void checkValidBookingObject(Booking booking) {
+        checkObjectIsNotNull(booking, "booking");
+        checkDateNotInPast(booking.getBookingDate());
+
+        if (booking.getId() < 1 || booking.getCustomerId() < 1 || booking.getBookingDate() == null) {
+            throw new InvalidBookingException("Invalid customer data");
         }
     }
 }

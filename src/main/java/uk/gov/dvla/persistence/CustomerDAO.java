@@ -36,9 +36,9 @@ public interface CustomerDAO {
     List<Customer> findAll();
 
     /**
-     * Finds customers by their name.
+     * Finds customers by name.
      *
-     * @param name the customer name
+     * @param name the name to search for
      * @return list of customers with the given name
      */
     List<Customer> findByName(String name);

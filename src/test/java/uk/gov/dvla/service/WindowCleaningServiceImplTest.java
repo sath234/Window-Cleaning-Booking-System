@@ -22,7 +22,7 @@ class WindowCleaningServiceImplTest {
     private WindowCleaningServiceImpl service;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         bookingDAO = new BookingDAOImpl();
         customerDAO = new CustomerDAOImpl();
         service = new WindowCleaningServiceImpl(bookingDAO, customerDAO);
@@ -41,8 +41,10 @@ class WindowCleaningServiceImplTest {
         service.addBooking(new Booking(4, 3, LocalDate.of(2025, 10, 1)));
     }
 
+    // ========== addCustomer() Tests ==========
+    
     @Test
-    void addCustomer_ValidCustomer_SavesSuccessfully() {
+    public void addCustomer_ValidCustomer_SavesSuccessfully() {
         Customer newCustomer = new Customer(5, "Yoko", 8);
         service.addCustomer(newCustomer);
 
@@ -51,59 +53,88 @@ class WindowCleaningServiceImplTest {
     }
 
     @Test
-    void addCustomer_NullCustomer_ThrowsException() {
+    public void addCustomer_NullCustomer_ThrowsException() {
         assertThrows(NullPointerException.class, () ->
                 service.addCustomer(null));
     }
 
     @Test
-    void addCustomer_DuplicateCustomer_ThrowsException() {
+    public void addCustomer_DuplicateCustomer_ThrowsException() {
         Customer duplicate = new Customer(1, "Duplicate", 5);
         assertThrows(DuplicateEntityException.class, () ->
                 service.addCustomer(duplicate));
     }
 
+    // ========== getCustomer() Tests ==========
+    
     @Test
-    void getCustomer_ValidCustomer_ReturnsCorrectCustomer() {
+    public void getCustomer_ValidCustomer_ReturnsCorrectCustomer() {
         Customer customer = service.getCustomer(1);
 
         assertEquals(new Customer(1, "John", 10), customer);
     }
 
     @Test
-    void getCustomer_NonExistentCustomer_ThrowsException() {
+    public void getCustomer_NonExistentCustomer_ThrowsException() {
         assertThrows(CustomerNotFoundException.class, () ->
                 service.getCustomer(999));
     }
 
+    // ========== getCustomerIdByName() Tests ==========
+
     @Test
-    void getCustomerIdByName_ExistingCustomer_ReturnsCorrectId() {
+    public void getCustomerIdByName_ValidName_ReturnsCorrectCustomerId(){
+        assertEquals(1, service.getCustomerIdByName("John"));
+    }
+
+    @Test
+    public void getCustomerIdByName_NullName_ThrowsException(){
+        assertThrows(NullPointerException.class, () -> service.getCustomerIdByName(null));
+    }
+
+    @Test
+    public void getCustomerIdByName_NoCustomersReturned_ThrowsException(){
+        assertThrows(CustomerNotFoundException.class, () -> service.getCustomerIdByName("Nathan"));
+    }
+
+    @Test
+    public void getCustomerIdByName_MultipleCustomersRetuned_ThrowsException(){
+        service.addCustomer(new Customer(5, "John", 10));
+        assertThrows(MultipleCustomerFoundException.class, () -> service.getCustomerIdByName("John"));
+    }
+
+    // ========== getCustomerIdByName() Tests ==========
+    
+    @Test
+    public void getCustomerIdByName_ExistingCustomer_ReturnsCorrectId() {
         int customerId = service.getCustomerIdByName("John");
         assertEquals(1, customerId);
     }
 
     @Test
-    void getCustomerIdByName_NullCustomerName_ThrowsException() {
+    public void getCustomerIdByName_NullCustomerName_ThrowsException() {
         assertThrows(NullPointerException.class, () ->
                 service.getCustomerIdByName(null));
     }
 
     @Test
-    void getCustomerIdByName_CustomerDoesNotExist_ThrowsException() {
+    public void getCustomerIdByName_CustomerDoesNotExist_ThrowsException() {
         assertThrows(CustomerNotFoundException.class, () ->
                 service.getCustomerIdByName("Nathan"));
     }
 
     @Test
-    void getCustomerIdByName_MultipleCustomersReturned_ThrowsException() {
+    public void getCustomerIdByName_MultipleCustomersReturned_ThrowsException() {
         service.addCustomer(new Customer(5, "John", 10));
         assertThrows(MultipleCustomerFoundException.class, () ->
                 service.getCustomerIdByName("John"));
     }
 
 
+    // ========== addBooking() Tests ==========
+    
     @Test
-    void addBooking_ValidBooking_SavesSuccessfully() {
+    public void addBooking_ValidBooking_SavesSuccessfully() {
         Booking newBooking = new Booking(5, 1, LocalDate.of(2027, 1, 1));
         service.addBooking(newBooking);
 
@@ -112,210 +143,242 @@ class WindowCleaningServiceImplTest {
     }
 
     @Test
-    void addBooking_NullBooking_ThrowsException() {
+    public void addBooking_NullBooking_ThrowsException() {
         assertThrows(NullPointerException.class, () ->
                 service.addBooking(null));
     }
 
     @Test
-    void addBooking_NonExistentCustomer_ThrowsException() {
+    public void addBooking_NonExistentCustomer_ThrowsException() {
         Booking booking = new Booking(5, 999, LocalDate.of(2027, 1, 1));
         assertThrows(CustomerNotFoundException.class, () ->
                 service.addBooking(booking));
     }
 
     @Test
-    void addBooking_PastDate_ThrowsException() {
+    public void addBooking_PastDate_ThrowsException() {
         Booking pastBooking = new Booking(5, 1, LocalDate.of(2020, 1, 1));
         assertThrows(BookingDateInThePastException.class, () ->
                 service.addBooking(pastBooking));
     }
 
+    // ========== getBookingByBookingId() Tests ==========
+    
     @Test
-    void getBookingByBookingId_ExistingBooking_ReturnsBooking() {
+    public void getBookingByBookingId_ExistingBooking_ReturnsBooking() {
         Booking booking = service.getBookingByBookingId(1);
         assertEquals(1, booking.getId());
         assertEquals(4, booking.getCustomerId());
     }
 
     @Test
-    void getBookingByBookingId_NonExistentBooking_ThrowsException() {
+    public void getBookingByBookingId_NonExistentBooking_ThrowsException() {
         assertThrows(BookingNotFoundException.class, () ->
                 service.getBookingByBookingId(999));
     }
 
+    // ========== getAllBookings() Tests ==========
+    
     @Test
-    void getAllBooking_ReturnsAllBookings() {
+    public void getAllBooking_ReturnsAllBookings() {
         List<Booking> bookings = service.getAllBookings();
         assertEquals(4, bookings.size());
     }
 
+    // ========== getAllBookingsForDate() Tests ==========
+    
     @Test
-    void getAllBookingsForDate_ExistingDate_ReturnsBookings() {
+    public void getAllBookingsForDate_ExistingDate_ReturnsBookings() {
         List<Booking> bookings = service.getAllBookingsForDate(LocalDate.of(2025, 10, 1));
         assertEquals(3, bookings.size());
     }
 
     @Test
-    void getAllBookingsForDate_NoBookings_ReturnsEmptyList() {
+    public void getAllBookingsForDate_NoBookings_ReturnsEmptyList() {
         List<Booking> bookings = service.getAllBookingsForDate(LocalDate.of(2030, 1, 1));
         assertTrue(bookings.isEmpty());
     }
 
     @Test
-    void getAllBookingsForDate_NullDate_ThrowsException() {
+    public void getAllBookingsForDate_NullDate_ThrowsException() {
         assertThrows(NullPointerException.class, () ->
                 service.getAllBookingsForDate(null));
     }
 
+    // ========== getAllBookingsForCustomerId() Tests ==========
+
     @Test
-    void getAllBookingsForCustomerId_OneCustomer_ReturnsBookings() {
+    public void getAllBookingsForCustomerId_CustomerWithOneBooking_ReturnsBookings() {
         List<Booking> bookings = service.getAllBookingsForCustomerId(1);
         assertEquals(1, bookings.size());
         assertEquals(3, bookings.get(0).getId());
     }
 
     @Test
-    void getAllBookingsForCustomerId_twpCustomer_ReturnsBookings() {
+    public void getAllBookingsForCustomerId_CustomerWithTwoBooking_ReturnsBookings() {
         service.addBooking(new Booking(5, 1, LocalDate.of(2025, 10, 1)));
-
         List<Booking> bookings = service.getAllBookingsForCustomerId(1);
+
         assertEquals(2, bookings.size());
         assertEquals(3, bookings.get(0).getId());
-        assertEquals(5, bookings.get(1).getId());
+        assertEquals(5, bookings.get(1).getId());;
     }
 
     @Test
-    void getAllBookingsForCustomerId_NoCustomers_ReturnsBookings() {
-        List<Booking> bookings = service.getAllBookingsForCustomerId(999);
+    public void getAllBookingsForCustomerId_CustomerWithNoBookings_ReturnsEmptyList() {
+        assertThrows(CustomerNotFoundException.class, () ->{
+            service.getAllBookingsForCustomerId(999);
+        });
+    }
+
+    // ========== getAllBookingsForDateRange() Tests ==========
+
+    @Test
+    public void getAllBookingsForDateRange_MultipleBookings_ReturnsCorrectTotal() {
+        List<Booking> bookings = service.getAllBookingsForDateRange(LocalDate.of(2025, 10, 1), LocalDate.of(2026, 10, 1));
+        assertEquals(4, bookings.size());
+        assertEquals(1, bookings.get(0).getId());
+        assertEquals(2, bookings.get(1).getId());
+        assertEquals(3, bookings.get(2).getId());
+        assertEquals(4, bookings.get(3).getId());
+    }
+
+    @Test
+    public void getAllBookingsForDateRange_SingleBookings_ReturnsCorrectTotal() {
+        List<Booking> bookings = service.getAllBookingsForDateRange(LocalDate.of(2026, 1, 1), LocalDate.of(2026, 10, 1));
+        assertEquals(1, bookings.size());
+        assertEquals(2, bookings.get(0).getId());
+    }
+
+    @Test
+    public void getAllBookingsForDateRange_NoBookings_ReturnsCorrectTotal() {
+        List<Booking> bookings = service.getAllBookingsForDateRange(LocalDate.of(2026, 10, 1), LocalDate.of(2026, 10, 2));
         assertTrue(bookings.isEmpty());
     }
 
     @Test
-    void getAllBookingsForDateRange_ValidRange_ReturnsBookings() {
-        List<Booking> bookings = service.getAllBookingsForDateRange(
-                LocalDate.of(2025, 1, 1),
-                LocalDate.of(2025, 12, 31)
-        );
-        assertEquals(3, bookings.size());
-    }
-
-    @Test
-    void getAllBookingsForDateRange_NoBookingsInRange_ReturnsEmptyList() {
-        List<Booking> bookings = service.getAllBookingsForDateRange(
-                LocalDate.of(2030, 1, 1),
-                LocalDate.of(2030, 12, 31)
-        );
-        assertTrue(bookings.isEmpty());
-    }
-
-    @Test
-    void getAllBookingsForDateRange_NullStartDate_ThrowsException() {
+    public void getAllBookingsForDateRange_NullStartDate_ThrowsException() {
         assertThrows(NullPointerException.class, () ->
-                service.getAllBookingsForDateRange(null, LocalDate.of(2025, 12, 31)));
+                service.getAllBookingsForDateRange(null, LocalDate.of(2020, 1, 1)));
     }
 
     @Test
-    void getAllBookingsForDateRange_NullEndDate_ThrowsException() {
+    public void getAllBookingsForDateRange_NullEndDate_ThrowsException() {
         assertThrows(NullPointerException.class, () ->
-                service.getAllBookingsForDateRange(LocalDate.of(2025, 1, 1), null));
+                service.getAllBookingsForDateRange(LocalDate.of(2020, 1, 1), null));
     }
 
     @Test
-    void getAllBookingsForDateRange_StartDateAfterEndDate_ThrowsException() {
+    public void getAllBookingsForDateRange_EndDateBeforeStartDate_ThrowsException() {
         assertThrows(InvalidDateRangeException.class, () ->
-                service.getAllBookingsForDateRange(LocalDate.of(2025, 1, 1), LocalDate.of(2024, 12, 31)));
+                service.getAllBookingsForDateRange(LocalDate.of(2020, 1, 1), LocalDate.of(2019, 1, 1)));
     }
 
+
+    // ========== getTotalWindowsForDate() Tests ==========
+    
     @Test
-    void getTotalWindowsForDate_MultipleBookings_ReturnsCorrectTotal() {
+    public void getTotalWindowsForDate_MultipleBookings_ReturnsCorrectTotal() {
         LocalDate date = LocalDate.of(2025, 10, 1);
         int result = service.getTotalWindowsForDate(date);
         assertEquals(26, result);
     }
 
     @Test
-    void getTotalWindowsForDate_SingleBooking_ReturnsCorrectTotal() {
+    public void getTotalWindowsForDate_SingleBooking_ReturnsCorrectTotal() {
         LocalDate date = LocalDate.of(2026, 1, 10);
         int result = service.getTotalWindowsForDate(date);
         assertEquals(5, result);
     }
 
     @Test
-    void getTotalWindowsForDate_NoBookings_ReturnsZero() {
+    public void getTotalWindowsForDate_NoBookings_ReturnsZero() {
         LocalDate date = LocalDate.of(2030, 1, 1);
         int result = service.getTotalWindowsForDate(date);
         assertEquals(0, result);
     }
 
     @Test
-    void getTotalWindowsForDate_NullDate_ThrowsException() {
+    public void getTotalWindowsForDate_NullDate_ThrowsException() {
         assertThrows(NullPointerException.class, () ->
                 service.getTotalWindowsForDate(null));
     }
 
+    // ========== getTotalWindowsForDateRange() Tests ==========
+
     @Test
-    void getTotalWindowsForDateRange_ValidRange_ReturnsCorrectTotal() {
-        int result = service.getTotalWindowsForDateRange(
-                LocalDate.of(2025, 1, 1),
-                LocalDate.of(2025, 12, 31)
-        );
-        assertEquals(26, result);
+    public void getTotalWindowsForDateRange_MultipleBookingsInDateRange_ReturnsCorrectTotal(){
+        assertEquals(26, service.getTotalWindowsForDateRange(LocalDate.of(2025, 9, 1), LocalDate.of(2025, 11, 1)));
+        assertEquals(31, service.getTotalWindowsForDateRange(LocalDate.of(2025, 9, 1), LocalDate.of(2026, 11, 1)));
     }
 
     @Test
-    void getTotalWindowsForDateRange_NoBookingsInRange_ReturnsZero() {
-        int result = service.getTotalWindowsForDateRange(
-                LocalDate.of(2030, 1, 1),
-                LocalDate.of(2030, 12, 31)
-        );
-        assertEquals(0, result);
+    public void getTotalWindowsForDateRange_SingleBookingInDateRange_ReturnsCorrectTotal(){
+        assertEquals(5, service.getTotalWindowsForDateRange(LocalDate.of(2026, 1, 1), LocalDate.of(2026, 11, 1)));
     }
 
     @Test
-    void getTotalWindowsForDateRange_NullStartDate_ThrowsException() {
-        assertThrows(NullPointerException.class, () ->
-                service.getTotalWindowsForDateRange(null, LocalDate.of(2025, 12, 31)));
+    public void getTotalWindowsForDateRange_NoBookingsInDateRange_ReturnsZero(){
+        assertEquals(0, service.getTotalWindowsForDateRange(LocalDate.of(2030, 1, 1), LocalDate.of(2030, 11, 1)));
     }
 
     @Test
-    void getTotalWindowsForDateRange_NullEndDate_ThrowsException() {
-        assertThrows(NullPointerException.class, () ->
-                service.getTotalWindowsForDateRange(LocalDate.of(2025, 1, 1), null));
+    public void getTotalWindowsForDateRange_NullStartDate_ThrowsException(){
+        assertThrows(NullPointerException.class, () ->{
+            service.getTotalWindowsForDateRange(null, LocalDate.of(2020, 1, 1));
+        });
     }
 
     @Test
-    void getTotalWindowsForDateRange_StartDateAfterEndDate_ThrowsException() {
-        assertThrows(InvalidDateRangeException.class, () ->
-                service.getTotalWindowsForDateRange(LocalDate.of(2025, 1, 1), LocalDate.of(2024, 12, 31)));
+    public void getTotalWindowsForDateRange_NullEndDate_ThrowsException(){
+        assertThrows(NullPointerException.class, () ->{
+            service.getTotalWindowsForDateRange(LocalDate.of(2020, 1, 1), null);
+        });
     }
 
     @Test
-    void getTotalCostForBooking_GeorgeBooking_ReturnsCorrectCost() {
+    public void getTotalWindowsForDateRange_StartDateAfterEndDate_ThrowsException(){
+        assertThrows(InvalidDateRangeException.class, () ->{
+            service.getTotalWindowsForDateRange(LocalDate.of(2020, 1, 3), LocalDate.of(2020, 1, 2));
+        });
+    }
+
+    @Test
+    public void getTotalWindowsForDateRange_MissingCustomer_ThrowsException(){
+        bookingDAO.save(new Booking(98, 999, LocalDate.of(2026, 1, 1)));
+        assertThrows(CustomerNotFoundException.class, () ->{
+            assertEquals(5, service.getTotalWindowsForDateRange(LocalDate.of(2026, 1, 1), LocalDate.of(2026, 11, 1)));
+        });
+    }
+
+    // ========== getTotalCostForBooking() Tests ==========
+    
+    @Test
+    public void getTotalCostForBooking_GeorgeBooking_ReturnsCorrectCost() {
         int result = service.getTotalCostForBooking(1);
         assertEquals(9, result);
     }
 
     @Test
-    void getTotalCostForBooking_JohnBooking_ReturnsCorrectCost() {
+    public void getTotalCostForBooking_JohnBooking_ReturnsCorrectCost() {
         int result = service.getTotalCostForBooking(3);
         assertEquals(15, result);
     }
 
     @Test
-    void getTotalCostForBooking_PaulBooking_ReturnsCorrectCost() {
+    public void getTotalCostForBooking_PaulBooking_ReturnsCorrectCost() {
         int result = service.getTotalCostForBooking(2);
         assertEquals(10, result);
     }
 
     @Test
-    void getTotalCostForBooking_BookingNotFound_ThrowsException() {
+    public void getTotalCostForBooking_BookingNotFound_ThrowsException() {
         assertThrows(BookingNotFoundException.class, () ->
                 service.getTotalCostForBooking(999));
     }
 
     @Test
-    void getTotalCostForBooking_CustomerNotFound_ThrowsCustomerNotFoundException() {
+    public void getTotalCostForBooking_CustomerNotFound_ThrowsCustomerNotFoundException() {
         bookingDAO.save(new Booking(98, 999, LocalDate.of(2027, 1, 1)));
 
         CustomerNotFoundException exception = assertThrows(CustomerNotFoundException.class, () ->
@@ -325,55 +388,121 @@ class WindowCleaningServiceImplTest {
         assertEquals("No customer found", exception.getMessage());
     }
 
+    // ========== getTotalCostForDate() Tests ==========
+    
     @Test
-    void getTotalCostForDate_MultipleBookings_ReturnsCorrectTotal() {
+    public void getTotalCostForDate_MultipleBookings_ReturnsCorrectTotal() {
         int result = service.getTotalCostForDate(LocalDate.of(2025, 10, 1));
         assertEquals(41, result);
     }
 
     @Test
-    void getTotalCostForDate_SingleBooking_ReturnsCorrectTotal() {
+    public void getTotalCostForDate_SingleBooking_ReturnsCorrectTotal() {
         int result = service.getTotalCostForDate(LocalDate.of(2026, 1, 10));
         assertEquals(10, result);
     }
 
     @Test
-    void getTotalCostForDate_NoBookings_ReturnsZero() {
+    public void getTotalCostForDate_NoBookings_ReturnsZero() {
         int result = service.getTotalCostForDate(LocalDate.of(2030, 1, 1));
         assertEquals(0, result);
     }
 
+    // ========== getTotalCostForDateRange() Tests ==========
+
     @Test
-    void getTotalCostForDateRange_ValidRange_ReturnsCorrectTotal() {
-        int result = service.getTotalCostForDateRange(
-                LocalDate.of(2025, 1, 1),
-                LocalDate.of(2026, 12, 31)
-        );
-        assertEquals(51, result);
+    public void getTotalCostForDateRange_MultipleBookingsInDateRange_ReturnsCorrectTotal() {
+        int result = service.getTotalCostForDateRange(LocalDate.of(2025, 9, 1), LocalDate.of(2025, 11, 1));
+        assertEquals(41, result);
     }
 
     @Test
-    void getTotalCostForDateRange_NoBookingsInRange_ReturnsZero() {
-        int result = service.getTotalCostForDateRange(
-                LocalDate.of(2030, 1, 1),
-                LocalDate.of(2030, 12, 31)
-        );
+    public void getTotalCostForDateRange_SingleBookingsInDateRange_ReturnsCorrectTotal() {
+        int result = service.getTotalCostForDateRange(LocalDate.of(2026, 1, 1), LocalDate.of(2026, 11, 1));
+        assertEquals(10, result);
+    }
+
+    @Test
+    public void getTotalCostForDateRange_NoBookingsInDateRange_ReturnsCorrectTotal() {
+        int result = service.getTotalCostForDateRange(LocalDate.of(2026, 11, 1), LocalDate.of(2026, 12, 1));
         assertEquals(0, result);
     }
 
     @Test
-    void getTotalCostForDateRange_StartDateAfterEndDate_ThrowsException() {
-        assertThrows(InvalidDateRangeException.class, () ->
-                service.getTotalCostForDateRange(LocalDate.of(2025, 1, 1), LocalDate.of(2024, 12, 31))
-        );
+    public void getTotalCostForDateRange_NullStartDate_ThrowsException() {
+        assertThrows(NullPointerException.class, () ->
+                service.getTotalCostForDateRange(null, LocalDate.of(2020, 1, 1)));
     }
 
     @Test
-    void addBooking_CustomerWithZeroWindows_WorksCorrectly() {
-        service.addCustomer(new Customer(5, "Zero Windows", 0));
-        service.addBooking(new Booking(97, 5, LocalDate.of(2027, 1, 1)));
+    public void getTotalCostForDateRange_NullEndDate_ThrowsException() {
+        assertThrows(NullPointerException.class, () ->
+                service.getTotalCostForDateRange(LocalDate.of(2020, 1, 1), null));
+    }
 
-        int cost = service.getTotalCostForBooking(97);
-        assertEquals(5, cost);
+    @Test
+    public void getTotalCostForDateRange_StartDateAfterEndDate_ThrowsException() {
+        assertThrows(InvalidDateRangeException.class, () ->
+                service.getTotalCostForDateRange(LocalDate.of(2020, 1, 1), LocalDate.of(2019, 1, 1)));
+    }
+
+    @Test
+    public void getTotalCostForDateRange_CustomerNotFound_ThrowsException() {
+        bookingDAO.save(new Booking(98, 999, LocalDate.of(2026, 1, 1)));
+        assertThrows(CustomerNotFoundException.class, () ->
+                service.getTotalCostForDateRange(LocalDate.of(2026, 1, 1), LocalDate.of(2026, 12, 1)));
+    }
+
+    // ========== Edge Case Tests ==========
+    @Test
+    public void addCustomer_CustomerWithZeroWindows_ThrowsException() {
+        assertThrows(InvalidCustomerException.class, () ->{
+            service.addCustomer(new Customer(5, "Zero Windows", 0));
+        });
+    }
+
+    @Test
+    public void addCustomer_NullName_ThrowsException() {
+        assertThrows(InvalidCustomerException.class, () ->{
+            service.addCustomer(new Customer(5, null, 5));
+        });
+    }
+
+    @Test
+    public void addCustomer_IdLessthanOne_ThrowsException() {
+        assertThrows(InvalidCustomerException.class, () ->{
+            service.addCustomer(new Customer(0, null, 5));
+        });
+
+        assertThrows(InvalidCustomerException.class, () ->{
+            service.addCustomer(new Customer(-1, null, 5));
+        });
+    }
+
+    @Test
+    public void addBooking_BookingIdLessThan1_ThrowsException() {
+        assertThrows(InvalidBookingException.class, () ->{
+            service.addBooking(new Booking(0, 1, LocalDate.of(2026, 1, 1)));
+        });
+        assertThrows(InvalidBookingException.class, () ->{
+            service.addBooking(new Booking(-1, 1, LocalDate.of(2026, 1, 1)));
+        });
+    }
+
+    @Test
+    public void addBooking_CustomerIdLessThan1_ThrowsException() {
+        assertThrows(InvalidBookingException.class, () ->{
+            service.addBooking(new Booking(1, 0, LocalDate.of(2026, 1, 1)));
+        });
+        assertThrows(InvalidBookingException.class, () ->{
+            service.addBooking(new Booking(1, -1, LocalDate.of(2026, 1, 1)));
+        });
+    }
+
+    @Test
+    public void addBooking_BookingDateNull_ThrowsException() {
+        assertThrows(InvalidBookingException.class, () ->{
+            service.addBooking(new Booking(6, 1, null));
+        });
     }
 }
