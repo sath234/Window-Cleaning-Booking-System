@@ -11,24 +11,24 @@ import java.util.*;
 public class BookingDAOImpl implements BookingDAO {
 
     private final Map<Integer, Booking> bookings = new HashMap<>();
-    
+
     @Override
     public void save(Booking booking) {
         ValidationUtil.checkDuplicateKeyInMap(bookings, booking.getId(), "Booking");
 
         bookings.put(booking.getId(), booking);
     }
-    
+
     @Override
     public Optional<Booking> findById(int bookingId) {
         return Optional.ofNullable(bookings.get(bookingId));
     }
-    
+
     @Override
     public List<Booking> findAll() {
         return new ArrayList<>(bookings.values());
     }
-    
+
     @Override
     public List<Booking> findByDate(LocalDate date) {
         return bookings.values().stream()

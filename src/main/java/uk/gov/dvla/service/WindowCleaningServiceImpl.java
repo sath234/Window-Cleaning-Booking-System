@@ -13,7 +13,10 @@ import uk.gov.dvla.util.ValidationUtil;
 import java.time.LocalDate;
 import java.util.List;
 
-
+/**
+ * Implementation of WindowCleaningService for managing window cleaning operations.
+ * Handles both customer and booking management with cost calculations.
+ */
 @AllArgsConstructor
 public class WindowCleaningServiceImpl implements WindowCleaningService {
 
@@ -136,7 +139,6 @@ public class WindowCleaningServiceImpl implements WindowCleaningService {
 
         Customer customer = customerDAO.findById(booking.getCustomerId())
                 .orElseThrow(() -> new CustomerNotFoundException("No customer found"));
-
 
 
         return (customer.getWindows() * COST_PER_WINDOW) + COST_PER_PROPERTY;

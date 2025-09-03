@@ -15,13 +15,13 @@ public final class ValidationUtil {
     /**
      * Checks if an object is already present in the HashMap.
      *
-     * @param <T>        the type of object
-     * @param map        the Map to check
-     * @param key        the key to check for
+     * @param <T>          the type of object
+     * @param map          the Map to check
+     * @param key          the key to check for
      * @param errorMessage the error message for the object type
      */
     public static <T> void checkDuplicateKeyInMap(Map<Integer, T> map,
-                                                         int key, String errorMessage) {
+                                                  int key, String errorMessage) {
         if (map.containsKey(key)) {
             throw new DuplicateEntityException("Duplicate "
                     + errorMessage + " not allowed");

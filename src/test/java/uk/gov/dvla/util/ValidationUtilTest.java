@@ -37,7 +37,7 @@ public class ValidationUtilTest {
         DuplicateEntityException exception = Assertions.assertThrows(DuplicateEntityException.class, () -> {
             ValidationUtil.checkDuplicateKeyInMap(map, key, objectName);
         });
-        
+
         Assertions.assertEquals(expectedMessage, exception.getMessage());
     }
 
@@ -83,7 +83,7 @@ public class ValidationUtilTest {
         NullPointerException exception = Assertions.assertThrows(NullPointerException.class, () -> {
             ValidationUtil.checkObjectIsNotNull(object, objectType);
         });
-        
+
         Assertions.assertEquals(expectedMessage, exception.getMessage());
     }
 
