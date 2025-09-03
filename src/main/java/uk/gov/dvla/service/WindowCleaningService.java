@@ -2,9 +2,7 @@ package uk.gov.dvla.service;
 
 import uk.gov.dvla.model.Booking;
 import uk.gov.dvla.model.Customer;
-import uk.gov.dvla.model.exception.BookingNotFoundException;
-import uk.gov.dvla.model.exception.CustomerNotFoundException;
-import uk.gov.dvla.model.exception.DuplicateEntityException;
+import uk.gov.dvla.model.exception.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,6 +18,7 @@ public interface WindowCleaningService {
      *
      * @param customer the customer to add
      * @throws NullPointerException     if customer is null
+     * @throws InvalidCustomerException if customer data is invalid
      * @throws DuplicateEntityException if customer already exists
      */
     void addCustomer(Customer customer);
@@ -48,6 +47,7 @@ public interface WindowCleaningService {
      *
      * @param booking the booking to add
      * @throws NullPointerException      if booking is null
+     * @throws InvalidBookingException   if booking data is invalid
      * @throws CustomerNotFoundException if customer doesn't exist
      * @throws DuplicateEntityException  if booking already exists
      */
@@ -83,8 +83,19 @@ public interface WindowCleaningService {
      *
      * @param customerId the customer ID
      * @return list of bookings for the customer
+     * @throws CustomerNotFoundException if customer not found
      */
     List<Booking> getAllBookingsForCustomerId(int customerId);
+
+    /**
+     * Retrieves all bookings for a specific customer.
+     *
+     * @param name the customer name
+     * @return list of bookings for the customer
+     * @throws NullPointerException      if name is null
+     * @throws CustomerNotFoundException if customer not found
+     */
+    List<Booking> getBookingsWithCustomerName(String name);
 
     /**
      * Retrieves all bookings within a date range.

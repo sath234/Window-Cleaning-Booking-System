@@ -304,6 +304,43 @@ class WindowCleaningServiceImplTest {
                 service.getTotalWindowsForDate(null));
     }
 
+    // ========== getBookingsWithCustomerName() Tests ==========
+
+    @Test
+    public void getBookingsWithCustomerName_WithValidName_ReturnsBooking() {
+        List<Booking> bookings = service.getBookingsWithCustomerName("John");
+
+        assertEquals(1, bookings.size());
+        assertEquals(3, bookings.get(0).getId());
+    }
+
+    @Test
+    public void getBookingsWithCustomerName_DoesNotHaveABooking_ReturnsBooking() {
+        service.addCustomer(new Customer(5, "Nathan", 10));
+        List<Booking> bookings = service.getBookingsWithCustomerName("Nathan");
+
+        assertTrue(bookings.isEmpty());
+    }
+
+    @Test
+    public void getBookingsWithCustomerName_NullName_ThrowsException() {
+        assertThrows(NullPointerException.class, () ->
+                service.getBookingsWithCustomerName(null));
+    }
+
+    @Test
+    public void getBookingsWithCustomerName_WithNonExistentName_ThrowsException() {
+        assertThrows(CustomerNotFoundException.class, () ->
+                service.getBookingsWithCustomerName("Nathan"));
+    }
+
+    @Test
+    public void getBookingsWithCustomerName_MultipleCustomersReturned_ThrowsException() {
+        service.addCustomer(new Customer(5, "John", 10));
+        assertThrows(MultipleCustomerFoundException.class, () ->
+                service.getBookingsWithCustomerName("John"));
+    }
+
     // ========== getTotalWindowsForDateRange() Tests ==========
 
     @Test

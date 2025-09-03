@@ -96,6 +96,23 @@ public class WindowCleaningServiceImpl implements WindowCleaningService {
     }
 
     @Override
+    public List<Booking> getBookingsWithCustomerName(String name) {
+        ValidationUtil.checkObjectIsNotNull(name, "String");
+
+        List<Customer> customers = customerDAO.findByName(name);
+
+        if (customers.isEmpty()) {
+            throw new CustomerNotFoundException("No customer found");
+        }
+
+        if (customers.size() > 1) {
+            throw new MultipleCustomerFoundException("Multiple customers found");
+        }
+
+        return bookingDAO.findByCustomerId(customers.get(0).getId());
+    }
+
+    @Override
     public List<Booking> getAllBookingsForDateRange(LocalDate startDate, LocalDate endDate) {
         ValidationUtil.checkObjectIsNotNull(startDate, "LocalDate start");
         ValidationUtil.checkObjectIsNotNull(endDate, "LocalDate end");

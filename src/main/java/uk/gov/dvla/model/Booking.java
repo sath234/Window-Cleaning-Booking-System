@@ -14,6 +14,13 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 public class Booking {
 
+    /**
+     * Constructor for Booking class.
+     *
+     * @param id the booking id
+     * @param customerId the customer id for the booking
+     * @param bookingDate the booking date
+     */
     public Booking(int id, int customerId, LocalDate bookingDate) {
         this.id = id;
         this.customerId = customerId;
