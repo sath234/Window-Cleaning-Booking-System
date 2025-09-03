@@ -16,7 +16,7 @@ public class Customer {
     /**
      * Customer number.
      */
-    private final int customerId;
+    private final int id;
     /**
      * Customer name.
      */

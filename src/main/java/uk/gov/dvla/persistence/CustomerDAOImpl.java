@@ -11,9 +11,9 @@ public class CustomerDAOImpl implements CustomerDAO {
     
     @Override
     public void save(Customer customer) {
-        ValidationUtil.checkDuplicateKeyInMap(customers, customer.getCustomerId(), "Customer");
+        ValidationUtil.checkDuplicateKeyInMap(customers, customer.getId(), "Customer");
 
-        customers.put(customer.getCustomerId(), customer);
+        customers.put(customer.getId(), customer);
     }
     
     @Override
@@ -24,5 +24,13 @@ public class CustomerDAOImpl implements CustomerDAO {
     @Override
     public List<Customer> findAll() {
         return new ArrayList<>(customers.values());
+    }
+
+    @Override
+    public List<Customer> findByName(String name) {
+        return customers.values()
+                .stream()
+                .filter(customer -> customer.getName().equals(name))
+                .toList();
     }
 }

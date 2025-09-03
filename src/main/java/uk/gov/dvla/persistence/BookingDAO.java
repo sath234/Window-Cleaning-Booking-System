@@ -12,5 +12,6 @@ public interface BookingDAO {
     Optional<Booking> findById(int bookingId);
     List<Booking> findAll();
     List<Booking> findByDate(LocalDate date);
+    List<Booking> findByDateRange(LocalDate startDate, LocalDate endDate);
     List<Booking> findByCustomerId(int customerId);
 }

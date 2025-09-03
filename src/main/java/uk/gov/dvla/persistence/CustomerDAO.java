@@ -10,4 +10,5 @@ public interface CustomerDAO {
     void save(Customer customer);
     Optional<Customer> findById(int customerId);
     List<Customer> findAll();
+    List<Customer> findByName(String name);
 }

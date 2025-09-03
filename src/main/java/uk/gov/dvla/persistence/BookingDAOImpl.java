@@ -6,7 +6,6 @@ import uk.gov.dvla.util.ValidationUtil;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor
 public class BookingDAOImpl implements BookingDAO {
@@ -15,9 +14,6 @@ public class BookingDAOImpl implements BookingDAO {
     
     @Override
     public void save(Booking booking) {
-        ValidationUtil.checkObjectIsNotNull(booking, "Booking");
-        ValidationUtil.checkDateNotInPast(booking.getBookingDate());
-        // TODO: move two above to service
         ValidationUtil.checkDuplicateKeyInMap(bookings, booking.getId(), "Booking");
 
         bookings.put(booking.getId(), booking);
@@ -37,13 +33,22 @@ public class BookingDAOImpl implements BookingDAO {
     public List<Booking> findByDate(LocalDate date) {
         return bookings.values().stream()
                 .filter(booking -> booking.getBookingDate().equals(date))
-                .collect(Collectors.toList());
+                .toList();
     }
-    
+
+    @Override
+    public List<Booking> findByDateRange(LocalDate startDate, LocalDate endDate) {
+        return bookings.values()
+                .stream()
+                .filter(booking -> !booking.getBookingDate().isBefore(startDate) && !booking.getBookingDate().isAfter(endDate))
+                .toList();
+    }
+
     @Override
     public List<Booking> findByCustomerId(int customerId) {
-        return bookings.values().stream()
+        return bookings.values()
+                .stream()
                 .filter(booking -> booking.getCustomerId() == customerId)
-                .collect(Collectors.toList());
+                .toList();
     }
 }
