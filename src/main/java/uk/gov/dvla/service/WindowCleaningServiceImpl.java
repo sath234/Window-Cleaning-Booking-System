@@ -44,10 +44,12 @@ public class WindowCleaningServiceImpl implements WindowCleaningService {
 
         List<Customer> customers = customerDAO.findByName(name);
 
+        // check if a customer was found
         if (customers.isEmpty()) {
             throw new CustomerNotFoundException("No customer found");
         }
 
+        // check if multiple customers were found
         if (customers.size() > 1) {
             throw new MultipleCustomerFoundException("Multiple customers found");
         }
@@ -60,7 +62,7 @@ public class WindowCleaningServiceImpl implements WindowCleaningService {
         ValidationUtil.checkObjectIsNotNull(booking, "booking");
         ValidationUtil.checkDateNotInPast(booking.getBookingDate());
 
-        // Check the customer exists
+        // check customer exists
         customerDAO.findById(booking.getCustomerId())
                 .orElseThrow(() -> new CustomerNotFoundException("No customer found"));
 
@@ -74,26 +76,27 @@ public class WindowCleaningServiceImpl implements WindowCleaningService {
     }
 
     @Override
-    public List<Booking> getAllBooking() {
+    public List<Booking> getAllBookings() {
         return bookingDAO.findAll();
     }
 
     @Override
-    public List<Booking> getAllBookingForDate(LocalDate date) {
+    public List<Booking> getAllBookingsForDate(LocalDate date) {
         ValidationUtil.checkObjectIsNotNull(date, "LocalDate");
 
         return bookingDAO.findByDate(date);
     }
 
     @Override
-    public List<Booking> getAllBookingForCustomerId(int customerId) {
+    public List<Booking> getAllBookingsForCustomerId(int customerId) {
         return bookingDAO.findByCustomerId(customerId);
     }
 
     @Override
-    public List<Booking> getAllBookingForDateRange(LocalDate startDate, LocalDate endDate) {
+    public List<Booking> getAllBookingsForDateRange(LocalDate startDate, LocalDate endDate) {
         ValidationUtil.checkObjectIsNotNull(startDate, "startDate");
         ValidationUtil.checkObjectIsNotNull(endDate, "endDate");
+        ValidationUtil.checkStartDateIsBeforeEndDate(startDate, endDate);
 
         return bookingDAO.findByDateRange(startDate, endDate);
     }
@@ -118,7 +121,7 @@ public class WindowCleaningServiceImpl implements WindowCleaningService {
     public int getTotalWindowsForDateRange(LocalDate startDate, LocalDate endDate) {
         ValidationUtil.checkObjectIsNotNull(startDate, "startDate");
         ValidationUtil.checkObjectIsNotNull(endDate, "endDate");
-        // TODO: Validation that start and end are right way round
+        ValidationUtil.checkStartDateIsBeforeEndDate(startDate, endDate);
 
         List<Booking> bookings = bookingDAO.findByDateRange(startDate, endDate);
 
@@ -134,9 +137,11 @@ public class WindowCleaningServiceImpl implements WindowCleaningService {
 
     @Override
     public int getTotalCostForBooking(int bookingNumber) {
+        // check booking exists
         Booking booking = bookingDAO.findById(bookingNumber)
                 .orElseThrow(() -> new BookingNotFoundException("No booking found"));
 
+        // check customer exists
         Customer customer = customerDAO.findById(booking.getCustomerId())
                 .orElseThrow(() -> new CustomerNotFoundException("No customer found"));
 
@@ -164,7 +169,7 @@ public class WindowCleaningServiceImpl implements WindowCleaningService {
     public int getTotalCostForDateRange(LocalDate startDate, LocalDate endDate) {
         ValidationUtil.checkObjectIsNotNull(startDate, "startDate");
         ValidationUtil.checkObjectIsNotNull(endDate, "endDate");
-        // TODO: Validation that start and end are right way round
+        ValidationUtil.checkStartDateIsBeforeEndDate(startDate, endDate);
 
         List<Booking> bookings = bookingDAO.findByDateRange(startDate, endDate);
 
@@ -177,4 +182,5 @@ public class WindowCleaningServiceImpl implements WindowCleaningService {
                 })
                 .sum();
     }
+
 }

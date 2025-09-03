@@ -2,8 +2,13 @@ package uk.gov.dvla.util;
 
 import uk.gov.dvla.model.exception.BookingDateInThePastException;
 import uk.gov.dvla.model.exception.DuplicateEntityException;
+import uk.gov.dvla.model.exception.InvalidDateRangeException;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -49,6 +54,18 @@ public final class ValidationUtil {
         if (date != null && date.isBefore(LocalDate.now())) {
             throw new BookingDateInThePastException(
                     "Booking date cannot be in the past");
+        }
+    }
+
+    /**
+     * Checks if the start date is before the end date.
+     *
+     * @param startDate the start date
+     * @param endDate   the end date
+     */
+    public static void checkStartDateIsBeforeEndDate(final LocalDate startDate, final LocalDate endDate) {
+        if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
+            throw new InvalidDateRangeException("Start date cannot be after end date");
         }
     }
 }

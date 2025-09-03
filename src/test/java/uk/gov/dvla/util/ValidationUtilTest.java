@@ -1,12 +1,14 @@
 package uk.gov.dvla.util;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import uk.gov.dvla.model.Booking;
 import uk.gov.dvla.model.Customer;
 import uk.gov.dvla.model.exception.DuplicateEntityException;
+import uk.gov.dvla.model.exception.InvalidDateRangeException;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -99,6 +101,20 @@ public class ValidationUtilTest {
     public void checkObjectIsNotNullDoesNotThrow(Object object, String objectType) {
         Assertions.assertDoesNotThrow(() -> {
             ValidationUtil.checkObjectIsNotNull(object, objectType);
+        });
+    }
+
+    @Test
+    public void checkStartDateIsBeforeEndDate_InvalidDateRange_ThrowsException(){
+        Assertions.assertThrows(InvalidDateRangeException.class, () -> {
+            ValidationUtil.checkStartDateIsBeforeEndDate(LocalDate.of(2024, 6, 10), LocalDate.of(2024, 6, 5));
+        });
+    }
+
+    @Test
+    public void checkStartDateIsBeforeEndDate_ValidDateRange_DoesNotThrowsException(){
+        Assertions.assertDoesNotThrow(() -> {
+            ValidationUtil.checkStartDateIsBeforeEndDate(LocalDate.of(2024, 6, 10), LocalDate.of(2024, 6, 11));
         });
     }
 }
