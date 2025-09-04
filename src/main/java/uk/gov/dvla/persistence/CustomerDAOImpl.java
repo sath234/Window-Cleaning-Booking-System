@@ -1,13 +1,21 @@
 package uk.gov.dvla.persistence;
 
+import lombok.NoArgsConstructor;
 import uk.gov.dvla.model.Customer;
 import uk.gov.dvla.util.ValidationUtil;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
+/**
+ * Implementation of CustomerDAO interface.
+ * This class provides methods to manage customers in memory database.
+ */
 public class CustomerDAOImpl implements CustomerDAO {
 
+    /**
+     * Map of Customer representing customer in memory database.
+     * The key is the customer id and the value is the Customer object.
+     */
     private final Map<Integer, Customer> customers = new HashMap<>();
 
     @Override

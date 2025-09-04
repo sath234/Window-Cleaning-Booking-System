@@ -7,9 +7,16 @@ import uk.gov.dvla.util.ValidationUtil;
 import java.time.LocalDate;
 import java.util.*;
 
-@NoArgsConstructor
+/**
+ * Implementation of BookingDAO interface.
+ * This class provides methods to manage bookings in memory database.
+ */
 public class BookingDAOImpl implements BookingDAO {
 
+    /**
+     * Map of Bookings representing bookings in memory database.
+     * The key is the booking id and the value is the Booking object.
+     */
     private final Map<Integer, Booking> bookings = new HashMap<>();
 
     @Override
