@@ -35,7 +35,7 @@ public class ValidationUtilTest {
 
     @ParameterizedTest
     @MethodSource("duplicateObjectTestCases")
-    public void checkDuplicateObjectInListThrowsException(Map<Integer, Object> map, int key, String objectName, String expectedMessage) {
+    public void checkDuplicateKeyInMap_WithDuplicates_ThrowsException(Map<Integer, Object> map, int key, String objectName, String expectedMessage) {
         DuplicateEntityException exception = Assertions.assertThrows(DuplicateEntityException.class, () -> {
             ValidationUtil.checkDuplicateKeyInMap(map, key, objectName);
         });
@@ -66,7 +66,7 @@ public class ValidationUtilTest {
 
     @ParameterizedTest
     @MethodSource("uniqueObjectTestCases")
-    public void checkDuplicateObjectInListDoesNotThrow(Map<Integer, Object> map, int key, String objectName) {
+    public void checkDuplicateKeyInMap_WithNoneDuplicates_DoesNotThrow(Map<Integer, Object> map, int key, String objectName) {
         Assertions.assertDoesNotThrow(() -> {
             ValidationUtil.checkDuplicateKeyInMap(map, key, objectName);
         });
@@ -81,7 +81,7 @@ public class ValidationUtilTest {
 
     @ParameterizedTest
     @MethodSource("nullObjectTestCases")
-    public void checkObjectIsNotNullThrowsException(Object object, String objectType, String expectedMessage) {
+    public void checkObject_IsNull_ThrowsException(Object object, String objectType, String expectedMessage) {
         NullPointerException exception = Assertions.assertThrows(NullPointerException.class, () -> {
             ValidationUtil.checkObjectIsNotNull(object, objectType);
         });
@@ -98,7 +98,7 @@ public class ValidationUtilTest {
 
     @ParameterizedTest
     @MethodSource("validObjectTestCases")
-    public void checkObjectIsNotNullDoesNotThrow(Object object, String objectType) {
+    public void checkObject_IsNotNullDoes_NotThrow(Object object, String objectType) {
         Assertions.assertDoesNotThrow(() -> {
             ValidationUtil.checkObjectIsNotNull(object, objectType);
         });
