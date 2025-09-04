@@ -506,7 +506,7 @@ class WindowCleaningServiceImplTest {
     }
 
     @Test
-    public void addCustomer_IdLessthanOne_ThrowsException() {
+    public void addCustomer_IdLessThanOne_ThrowsException() {
         assertThrows(InvalidCustomerException.class, () ->{
             service.addCustomer(new Customer(0, null, 5));
         });
