@@ -20,9 +20,21 @@ import java.util.List;
 @AllArgsConstructor
 public class WindowCleaningServiceImpl implements WindowCleaningService {
 
+    /**
+     * Cost per property.
+     */
     public static final int COST_PER_PROPERTY = 5;
+    /**
+     * Cost per window.
+     */
     public static final int COST_PER_WINDOW = 1;
+    /**
+     * BookingDAO instance for booking data access.
+     */
     private final BookingDAO bookingDAO;
+    /**
+     * CustomerDAO instance for customer data access.
+     */
     private final CustomerDAO customerDAO;
 
     @Override
